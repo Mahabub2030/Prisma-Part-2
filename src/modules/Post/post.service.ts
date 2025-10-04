@@ -16,6 +16,7 @@ const createPost = async (payload: Prisma.PostCreateInput): Promise<Post> => {
   });
   return result;
 };
+
 const getAllPosts = async ({
   page = 1,
   limit = 10,
@@ -28,10 +29,11 @@ const getAllPosts = async ({
   isFeatured?: boolean;
 }) => {
   const skip = (page - 1) * limit;
-  console.log({ isFeatured });
-  const where: any = {
-    search && {
-    OR: [
+
+  const where: any = {};
+
+  if (search) {
+    where.OR = [
       {
         title: {
           contains: search,
@@ -44,20 +46,22 @@ const getAllPosts = async ({
           mode: "insensitive",
         },
       },
-    ],
-  
-  };
+    ];
   }
-    {
-      typeof isFeatured === "boolean"&& isFeatured
-    }
+
+  if (typeof isFeatured === "boolean") {
+    where.isFeatured = isFeatured;
+  }
+
   const result = await prisma.post.findMany({
     skip,
     take: limit,
     where,
   });
+
   return result;
 };
+
 const getPostById = async (id: number) => {
   const result = await prisma.post.findUnique({
     where: { id },
@@ -66,6 +70,7 @@ const getPostById = async (id: number) => {
 
   return result;
 };
+
 const updatePost = async (id: number, data: Partial<any>) => {
   return prisma.post.update({ where: { id }, data });
 };

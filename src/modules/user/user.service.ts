@@ -18,7 +18,7 @@ const getAllFromDB = async () => {
       phone: true,
       picture: true,
       createdAt: true,
-      updateAt: true,
+      updatedAt: true,
       role: true,
       status: true,
       posts: true,
